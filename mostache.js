@@ -31,6 +31,7 @@
 	rxColon=/\s*\:\s*/,
 	rxComma=/\s*\,\s*/,
 	rxPipe=/\s*\|\s*/,
+	rxDblPipe=/\s*\|{2}\s*/,
 	rxIndex=/\{INDEX\}/g,
 	rxHTML=/[&<>"'\/]/g,
 	rxRx=/[\-\[\]{}()*+?.,\\\^$|#\s]/g,
@@ -401,15 +402,21 @@
 		rep=u;
 	}
 
-	if(name.indexOf("|")!==-1){
-		rep=name.trim().split(rxPipe).map(function(a,b){
+	if(name.search(/[^|]\|{2}[^|]/)!==-1){
+		rep=name.trim().split(rxDblPipe);
+		name=rep[0];
+		cache['__OR']=rep[1];
+		rep=u;
+	}
 
-			if(a.slice(0,1)==="."){ 
+	if(name.search(/[^|]\|[^|]/)!==-1){
+		rep=name.trim().split(rxPipe).map(function(a,b){
+			if(a.slice(0,1)==="."){
 				useSelf[b-1] = true;
 				a=a.slice(1);
-			}			
+			}
 			return a;
-		});		
+		});
 		name=rep.shift();
 	} // end mostache patch
 
@@ -676,6 +683,11 @@
 
   Writer.prototype.escapedValue = function escapedValue (token, context) {
     var u,value = context.lookup(token[1]);
+
+    if (value === u && context.cache.__OR !== u) {
+      value = context.cache.__OR;
+    }
+
     if (value != u)
       return mustache.escape(value);
   };

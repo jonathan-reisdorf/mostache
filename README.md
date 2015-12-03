@@ -23,7 +23,10 @@ Try online examples at <http://danml.com/mostache/>
 #### {{!path}} else synax
   `{{!path}}` turns into `{{/path}}{{^path}}`, for simpler _else_ handling. <br />
     `<p>{{#ok}}Y{{!ok}}N{{/ok}}</p>` == `<p>{{#ok}}Y{{/ok}}{{^ok}}N{{/ok}}</p>`
-    
+
+#### {{a||b}} or synax
+  With `{{a||b}}`, b is used as a fallback if a is undefined.
+
 #### {{#k=v}} conditionals
   Compares are made against a _primitive_ value to the right of the `=`, no code/path/expressions evaluated. <br />
   `{{#sec=main}}Home{{/sec=main}}` turns into `Home` with `{sec:"main"}` and nothing with `{sec:'about'}` . <br />
