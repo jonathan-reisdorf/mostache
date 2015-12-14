@@ -387,6 +387,12 @@
     // begin mostache patch to find methods in context chains
       rep, useSelf=[], last;
 
+	if(name.indexOf("!=")!==-1){ 
+      rep=name.trim().split(rxEqual); 
+      name=rep[0].slice(0,-1);
+      if( !(cache[name]!=rep[1] || cache["."][name]!=rep[1]) ){  name="";  }
+      rep=u;
+    }
 
     if(name.indexOf("=")!==-1){
       rep=name.trim().split(rxEqual);
@@ -671,12 +677,13 @@
 
   Writer.prototype.renderPartial = function renderPartial (token, context, partials) {
     if (!partials) return;
-
-    var u,value = isFunction(partials) ? partials(token[1]) : partials[token[1]];
-    if (value != u)
-      return this.renderTokens(this.parse(value), context, partials, value);
+    var u, key=String(token[1]).trim().split(/\s+/), 
+	value = partials[token[1]];
+	if(isFunction(partials)) value = partials(key[0], key.slice(1), context.view );
+	if(isFunction(partials[key[0]])) value = partials[key[0]](key.slice(1), context.view );
+	if (value != u) return this.renderTokens(this.parse(value), context, partials, value);
   };
-
+  
   Writer.prototype.unescapedValue = function unescapedValue (token, context) {
     var u, value = context.lookup(token[1]);
     if (value != u)
@@ -746,7 +753,13 @@
                           'but "' + typeStr(template) + '" was given as the first ' +
                           'argument for mustache#render(template, view, partials)');
     }
-    if(template.indexOf("{{@@}}")!==-1) template = template.replace(rxRazor, "$1{{$2}}");
+	if(template.indexOf("{{@@}}")!==-1) template = template.replace(rxRazor, "$1{{$2}}");
+
+	var head="{{=<@ @>=}}";
+	if(template.indexOf("<@") !==-1 && template.indexOf("@>") !==-1 && template.slice(0,11)!=head){
+		template = render(head+" "+template, view, partials||{});
+	}
+
     return defaultWriter.render(template.replace(rxElse, "{{/$1}}{{^$1}}"), view, partials);
   };
 

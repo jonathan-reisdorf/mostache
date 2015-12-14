@@ -31,6 +31,21 @@ Try online examples at <http://danml.com/mostache/>
   Compares are made against a _primitive_ value to the right of the `=`, no code/path/expressions evaluated. <br />
   `{{#sec=main}}Home{{/sec=main}}` turns into `Home` with `{sec:"main"}` and nothing with `{sec:'about'}` . <br />
   `{{#a.length=3}}{{.}}{{/a.length=3}}` turns into `abc` with `{a:"abc"}` and nothing with `{a:'a'}` . <br />
+  For performance reasons, long paths are not parsed, only one dot to the left of the equal, but wrapper blocks can drill.
+  
+#### {{#k!=v}} NOT conditionals
+  Compares are made against a _primitive_ value to the right of the `=`, no code/path/expressions evaluated. <br />
+  `{{#sec=!main}}Home{{/sec=!main}}` turns into `Home` with `{sec:"about"}` and nothing with `{sec:"main"}` . <br />
+  `{{#a.length!=3}}{{.}}{{/a.length!=3}}` turns into `abc` with `{a:"a"}` and nothing with `{a:'abc'}` . <br />
+  For performance reasons, long paths are not parsed, only one dot to the left of the equal, but wrapper blocks can drill.
+
+
+#### <@macro@> synax
+  Using `<@` and `@>` in a template invokes macro mode, where the template is run twice.<br  />
+  First, delimeters are switched to `<@` and `@>` and the template is applied  with normal data. <br />
+  Then, the result is re-fed as to re-render normally. This can be used for sub-queries, marcos, even UI generation. <br />
+`Mustache.to_html("Selected: {{data.<@selected@>}}", {data:["A","B","C"], selected: 1})` yields `Selected: B` <br />
+The internal intermediate template for the above looks like `Selected {{data.1}}` after the first pass.
 
 #### {{#obj:key}} object iteration
  Iterates over objects using a placeholder name on the section tag, prefixed by ":". <br />
@@ -40,6 +55,22 @@ Try online examples at <http://danml.com/mostache/>
 #### {{__.key}} root synax
   `{{__.key}}` reaches _key_ on the data object given to Mustache, bypassing local conflicts. <br />
   `{{#b}}{{a}}|{{__.a}}{{/b}}` turns into `1|123` with `{a:123, b:[{a:1}]}`
+
+
+#### parameters for partials
+  `{{> mailto email}}` passes an argument of `email` to a function partial. <br />
+  This can be used to make more powerful/flexible custom helpers, and help to avoid hard-coding helper to data:  <br />
+  `{{name}} ({{> mailto email}})` with `{name:"Mary", email: "mary@example.com"}` where <br />
+  
+    function(method, args, context){
+      switch(method){ // values can be          interpolated    -or-  realized now
+        case "mailto": return '<a href="mailto:{{'+args[0]+'}}">'+context[args[0]].toUpperCase()+'</a>' ;break;
+      } 
+    }
+is the partial yields `Mary (<a href="mailto:mary@example.com">MARY@EXAMPLE.COM</a>)` <br />
+The original mustache would need `email` hard-coded into the partial above. <br />
+You can also use a partial object of mixed string and method properties, methods called as `(args, context)`
+
 
 #### razor syntax
   Activated by including `{{@@}}` inside a template, allows a leaner razor-style syntax <br />
