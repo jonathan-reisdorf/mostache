@@ -1,4 +1,4 @@
- /*!
+/*!
  * mustache.js - Logic-less {{mustache}} templates with JavaScript
  * http://github.com/janl/mustache.js
  */
@@ -21,22 +21,22 @@
 }(this, function mustacheFactory (mustache) {
   "use strict";
   var 	objectToString = Object.prototype.toString,
-		isArray = Array.isArray || function isArrayPolyfill (object) {
-    	  return objectToString.call(object) === '[object Array]';
-  	},
-	nil, // much faster than undefined in v8
-	rxElse= /\{\{!([\w\.]+?)\}\}/g,
-	rxRazor=/(\W)@([#\^!\/\|\.\)\(]?[\w\.$|]+)/g,
-	rxEqual=/\s*\=\s*/, 
-	rxColon=/\s*\:\s*/,
-	rxComma=/\s*\,\s*/,
-	rxPipe=/\s*\|\s*/,
-	rxDblPipe=/\s*\|{2}\s*/,
-	rxIndex=/\{INDEX\}/g,
-	rxHTML=/[&<>"'\/]/g,
-	rxRx=/[\-\[\]{}()*+?.,\\\^$|#\s]/g,
-	sepRX=/\{SEP\}([\w\W]+?)\{\/SEP\}/g;
-  
+    isArray = Array.isArray || function isArrayPolyfill (object) {
+        return objectToString.call(object) === '[object Array]';
+      },
+    nil, // much faster than undefined in v8
+    rxElse= /\{\{!([\w\.]+?)\}\}/g,
+    rxRazor=/(\W)@([#\^!\/\|\.\)\(]?[\w\.$|]+)/g,
+    rxEqual=/\s*\=\s*/,
+    rxColon=/\s*\:\s*/,
+    rxComma=/\s*\,\s*/,
+    rxPipe=/\s*\|\s*/,
+    rxDblPipe=/\s*\|{2}\s*/,
+    rxIndex=/\{INDEX\}/g,
+    rxHTML=/[&<>"'\/]/g,
+    rxRx=/[\-\[\]{}()*+?.,\\\^$|#\s]/g,
+    sepRX=/\{SEP\}([\w\W]+?)\{\/SEP\}/g;
+
   function isFunction (object) {
     return typeof object === 'function';
   }
@@ -61,11 +61,11 @@
     return obj != nil && typeof obj === 'object' && (propName in obj);
 
   }
-  
+
   //var nonSpaceRe = /\S/;
   //function isWhitespace (string) {	return nonSpaceRe.test(string);  }
- var isWhitespace=/\S/;
-  
+  var isWhitespace=/\S/;
+
   var entityMap = {
     '&': '&amp;',
     '<': '&lt;',
@@ -276,19 +276,19 @@
       token = tokens[i];
 
       switch (token[0]) {
-      case '#':
-      case '^':
-        collector.push(token);
-        sections.push(token);
-        collector = token[4] = [];
-        break;
-      case '/':
-        section = sections.pop();
-        section[5] = token[2];
-        collector = sections.length > 0 ? sections[sections.length - 1][4] : nestedTokens;
-        break;
-      default:
-        collector.push(token);
+        case '#':
+        case '^':
+          collector.push(token);
+          sections.push(token);
+          collector = token[4] = [];
+          break;
+        case '/':
+          section = sections.pop();
+          section[5] = token[2];
+          collector = sections.length > 0 ? sections[sections.length - 1][4] : nestedTokens;
+          break;
+        default:
+          collector.push(token);
       }
     }
 
@@ -317,9 +317,9 @@
    * Returns the matched text if it can match, the empty string otherwise.
    */
   Scanner.prototype.scan = function scan (re) {
-	var t=this.tail, match, string;
+    var t=this.tail, match, string;
 //	if(!re.test(t)) return '';
-	
+
     match = t.match(re);
 
     if (!match || match.index !== 0)
@@ -341,16 +341,16 @@
     var index = this.tail.search(re), match;
 
     switch (index) {
-    case -1:
-      match = this.tail;
-      this.tail = '';
-      break;
-    case 0:
-      match = '';
-      break;
-    default:
-      match = this.tail.substring(0, index);
-      this.tail = this.tail.substring(index);
+      case -1:
+        match = this.tail;
+        this.tail = '';
+        break;
+      case 0:
+        match = '';
+        break;
+      default:
+        match = this.tail.substring(0, index);
+        this.tail = this.tail.substring(index);
     }
 
     this.pos += match.length;
@@ -384,47 +384,47 @@
     var cache = this.cache;
 
     var value, u, len,
-	 // begin mostache patch to find methods in context chains
-	rep, useSelf=[], last;
-	  
-		
-	if(name.indexOf("=")!==-1){ 
-		rep=name.trim().split(rxEqual); 
-	 	name=rep[0];
-	 	if( !(cache[name]==rep[1] || cache["."][name]==rep[1]) ){  name="";  }
-	 	rep=u;
-	}
-		
-	if(name.indexOf(":")!==-1){ 
-		rep=name.trim().split(rxColon);
-	 	name=rep[0];
-		cache['__NAME']=rep[1];
-		rep=u;
-	}
+    // begin mostache patch to find methods in context chains
+      rep, useSelf=[], last;
 
-	if(name.search(/[^|]\|{2}[^|]/)!==-1){
-		rep=name.trim().split(rxDblPipe);
-		name=rep[0];
-		cache['__OR']=rep[1];
-		rep=u;
-	}
 
-	if(name.search(/[^|]\|[^|]/)!==-1){
-		rep=name.trim().split(rxPipe).map(function(a,b){
-			if(a.slice(0,1)==="."){
-				useSelf[b-1] = true;
-				a=a.slice(1);
-			}
-			return a;
-		});
-		name=rep.shift();
-	} // end mostache patch
+    if(name.indexOf("=")!==-1){
+      rep=name.trim().split(rxEqual);
+      name=rep[0];
+      if( !(cache[name]==rep[1] || cache["."][name]==rep[1]) ){  name="";  }
+      rep=u;
+    }
 
-	
+    if(name.indexOf(":")!==-1){
+      rep=name.trim().split(rxColon);
+      name=rep[0];
+      cache['__NAME']=rep[1];
+      rep=u;
+    }
+
+    if(name.search(/[^|]\|{2}[^|]/)!==-1){
+      rep=name.trim().split(rxDblPipe);
+      name=rep.shift();
+      cache['__OR']=rep;
+      rep=u;
+    }
+
+    if(name.search(/[^|]\|[^|]/)!==-1){
+      rep=name.trim().split(rxPipe).map(function(a,b){
+        if(a.slice(0,1)==="."){
+          useSelf[b-1] = true;
+          a=a.slice(1);
+        }
+        return a;
+      });
+      name=rep.shift();
+    } // end mostache patch
+
+
     //if (cache.hasOwnProperty(name)) {
-	if((value = cache[name])==u){
+    if((value = cache[name])==u){
       //value = cache[name];
-    //} else {
+      //} else {
       var context = this, names, index, lookupHit = false;
 
       while (context) {
@@ -432,7 +432,7 @@
           value = context.view;
           names = name.split('.');
           index = 0;
-          
+
           if(names[0]==="__" && !context.parent) names.shift(); // support root lookup
 
           /**
@@ -446,7 +446,7 @@
            * This is specially necessary for when the value has been set to
            * `undefined` and we want to avoid looking up parent contexts.
            **/
-		  len=names.length;
+          len=names.length;
           while (value != u && index < len) {
             if (index === len - 1)
               lookupHit = hasProperty(value, names[index]);
@@ -466,65 +466,65 @@
 
       cache[name] = value;
     }
-	
-	
-	 // begin mostache patch to handle passing in methods with arguments to expressions:
-	 if(rep!==u){
-		rep.forEach(function(x, i){
-			function resolve(start, path) {
-				return path.split(/[\.,]/).reduce(function(obj, prop) {
-					return obj && obj[prop];
-				}, start);
-			}   
-			var args=x.split("(");
-				x=args.shift();
-			
-			if(args.length){			
-				args=args[0].trim().split(")")[0].trim().split(rxComma).map(function(a){
-					try{return JSON.parse(a);}catch(y){return a;}
-				});
-			}
-			var u,o=resolve( useSelf[i] ? (value===u?name:value) : mustacheFactory.global, x), v=value;
-			if(typeof o ==="function"){
-				if(value===u){ value=name; }
-				
-					
-				try{
-					if(useSelf[i]){ 
-						if(args.length){
-							value=o.apply(value, args);
-						}else{
-							value=o.call(value);
-						}
-					}else{  
-						if(args.length){
-							switch(args.length){
-								case 1: return value=o(value, args[0]);
-								case 2: return value=o(value, args[0], args[1]);
-								case 3: return value=o(value, args[0], args[1], args[2]);
-								default: return o.apply(this, [value].concat(args));
-							}
-							
-						}else{
-							value=o(value);
-						}
-					}
-				}catch(y){ } // shhh		
-				
-			}//end if found function?
-		}); // end forEach rep
-	 } // end if rep?
-	 
-	 //handle native functions different than user-land functions (minus bind()'d ones)
+
+
+    // begin mostache patch to handle passing in methods with arguments to expressions:
+    if(rep!==u){
+      rep.forEach(function(x, i){
+        function resolve(start, path) {
+          return path.split(/[\.,]/).reduce(function(obj, prop) {
+            return obj && obj[prop];
+          }, start);
+        }
+        var args=x.split("(");
+        x=args.shift();
+
+        if(args.length){
+          args=args[0].trim().split(")")[0].trim().split(rxComma).map(function(a){
+            try{return JSON.parse(a);}catch(y){return a;}
+          });
+        }
+        var u,o=resolve( useSelf[i] ? (value===u?name:value) : mustacheFactory.global, x), v=value;
+        if(typeof o ==="function"){
+          if(value===u){ value=name; }
+
+
+          try{
+            if(useSelf[i]){
+              if(args.length){
+                value=o.apply(value, args);
+              }else{
+                value=o.call(value);
+              }
+            }else{
+              if(args.length){
+                switch(args.length){
+                  case 1: return value=o(value, args[0]);
+                  case 2: return value=o(value, args[0], args[1]);
+                  case 3: return value=o(value, args[0], args[1], args[2]);
+                  default: return o.apply(this, [value].concat(args));
+                }
+
+              }else{
+                value=o(value);
+              }
+            }
+          }catch(y){ } // shhh
+
+        }//end if found function?
+      }); // end forEach rep
+    } // end if rep?
+
+    //handle native functions different than user-land functions (minus bind()'d ones)
     if (isFunction(value)){
-		 if(String(value).indexOf("[native code]")!==-1 && last){
-			value=value.call(last);
-		 }else{
-			value = value.call(this.view);
-		 }
-	}
-	 
-	 // end mostache patch
+      if(String(value).indexOf("[native code]")!==-1 && last){
+        value=value.call(last);
+      }else{
+        value = value.call(this.view);
+      }
+    }
+
+    // end mostache patch
     return value;
   };
 
@@ -590,17 +590,19 @@
       value = u;
       token = tokens[i];
       symbol = token[0];
-	switch(symbol){
-	  case '#': value = this.renderSection(token, context, partials, originalTemplate); break;
-	  case '^': value = this.renderInverted(token, context, partials, originalTemplate); break;
-	  case '>': value = this.renderPartial(token, context, partials, originalTemplate); break;
-	  case '&': value = this.unescapedValue(token, context); break;
-	  case 'name': value = this.escapedValue(token, context); break;
-	  case 'text': value = this.rawValue(token); break;
-	}
 
-      if (value !== u)
+      switch(symbol){
+        case '#': value = this.renderSection(token, context, partials, originalTemplate); break;
+        case '^': value = this.renderInverted(token, context, partials, originalTemplate); break;
+        case '>': value = this.renderPartial(token, context, partials, originalTemplate); break;
+        case '&': value = this.unescapedValue(token, context); break;
+        case 'name': value = this.escapedValue(token, context); break;
+        case 'text': value = this.rawValue(token); break;
+      }
+
+      if (value !== u) {
         buffer += value;
+      }
     }
 
     return buffer;
@@ -621,28 +623,28 @@
 
     if (isArray(value)) {
       for (var j = 0, valueLength = value.length; j < valueLength; ++j) {
-		sep= (valueLength-1)===j ? "" : "$1";// separator value
+        sep= (valueLength-1)===j ? "" : "$1";// separator value
         buffer += this.renderTokens(token[4], context.push(value[j]), partials, originalTemplate).replace(rxIndex, j+1).replace(sepRX, sep);
       }
     } else if (typeof value === 'object' || typeof value === 'string' || typeof value === 'number') {
-      	// handle object:key iterations:
-      	if(value != u && typeof value === 'object' && context.cache.__NAME) {
-		for(var k in value) {
-			var v = value[k], v2 = v;
-			if(typeof v === "object") {
-				v = {};
-				v[context.cache.__NAME] = k;
-				for(var it in v2) if(v2.hasOwnProperty(it)) v[it] = v2[it];
-			} else {
-				v = new v.constructor(v);
-				v[context.cache.__NAME] = k;
-			}
-			sep = (valueLength - 1) === j ? "" : "$1"; // separator value
-			buffer += this.renderTokens(token[4], context.push(v), partials, originalTemplate).replace(rxIndex, k).replace(sepRX, sep);
-		}// next k
-	} else { //numbers and strings and non-iterated objects:
-		buffer += this.renderTokens(token[4], context.push(value), partials, originalTemplate).replace(sepRX, sep);
-	}
+      // handle object:key iterations:
+      if(value != u && typeof value === 'object' && context.cache.__NAME) {
+        for(var k in value) {
+          var v = value[k], v2 = v;
+          if(typeof v === "object") {
+            v = {};
+            v[context.cache.__NAME] = k;
+            for(var it in v2) if(v2.hasOwnProperty(it)) v[it] = v2[it];
+          } else {
+            v = new v.constructor(v);
+            v[context.cache.__NAME] = k;
+          }
+          sep = (valueLength - 1) === j ? "" : "$1"; // separator value
+          buffer += this.renderTokens(token[4], context.push(v), partials, originalTemplate).replace(rxIndex, k).replace(sepRX, sep);
+        }// next k
+      } else { //numbers and strings and non-iterated objects:
+        buffer += this.renderTokens(token[4], context.push(value), partials, originalTemplate).replace(sepRX, sep);
+      }
     } else if (isFunction(value)) {
       if (typeof originalTemplate !== 'string')
         throw new Error('Cannot use higher-order sections without the original template');
@@ -684,16 +686,30 @@
   Writer.prototype.escapedValue = function escapedValue (token, context) {
     var u,value = context.lookup(token[1]);
 
-    if (value === u && context.cache.__OR !== u) {
-      value = context.cache.__OR;
+    if (value === u && context.cache.__OR) {
+      value = context.cache.__OR.reduce(function(prev, next, index) {
+        return (index === 1 ? this.interpretRawValue(prev, context) : prev) || this.interpretRawValue(next, context);
+      }.bind(this));
     }
 
-    if (value != u)
+    if (value !== u)
       return mustache.escape(value);
   };
 
   Writer.prototype.rawValue = function rawValue (token) {
     return token[1];
+  };
+
+  Writer.prototype.interpretRawValue = function interpretRawValue (rawValue, context) {
+    if (rawValue.search(/^['"].*['"]$/) === 0) {
+      return rawValue.substr(1, rawValue.length - 2);
+    }
+
+    if (!isNaN(rawValue)) {
+      return parseFloat(rawValue);
+    }
+
+    return context.lookup(rawValue);
   };
 
   mustache.name = 'mustache.js';
@@ -723,14 +739,14 @@
    * Renders the `template` with the given `view` and `partials` using the
    * default writer.
    */
-	  
+
   mustache.render = function render (template, view, partials) {
     if (typeof template !== 'string') {
       throw new TypeError('Invalid template! Template should be a "string" ' +
                           'but "' + typeStr(template) + '" was given as the first ' +
                           'argument for mustache#render(template, view, partials)');
     }
-	if(template.indexOf("{{@@}}")!==-1) template = template.replace(rxRazor, "$1{{$2}}");
+    if(template.indexOf("{{@@}}")!==-1) template = template.replace(rxRazor, "$1{{$2}}");
     return defaultWriter.render(template.replace(rxElse, "{{/$1}}{{^$1}}"), view, partials);
   };
 
